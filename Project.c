@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "my-header.h"
 
 void menu();
+void loadDoctor();
 int main()
 {
     system("cls");
@@ -17,14 +17,21 @@ int main()
         {
         case 1:
             system("clear");
-            load_doctor();
+            loadDoctor();
             break;
 
         case 2:
             system("clear");
             break;
 
+        case 7:
+            system("clear");
+            printf("Exiting....\n");
+            break;
+
         default:
+        system("clear");
+        printf("<<<<< Invalid Choice >>>>>>\n");
             break;
         }
 
@@ -47,3 +54,25 @@ void menu()
     printf("+------------------------------------------------------------+\n");
     printf("  Enter Your Choice : ");
 }
+
+ void loadDoctor()                                           
+    {                                                           
+        FILE *fp = fopen("Doctors.txt", "a");                   
+        char name[200];                                         
+        int n;                                                  
+        printf("Enter Number Of Doctors To Enter At A Time: "); 
+        scanf("%d", &n);                                        
+        getchar();                                              
+        for (int i = 0; i < n; i++)                             
+        {                                                       
+                                                                
+            printf("Enter Name Of Doctor %d: ", i + 1);         
+            fgets(name,200,stdin);                            
+            fprintf(fp, "Name: %s", name);                    
+        }                                                       
+        fclose(fp);                                             
+        system("clear");                                        
+        printf("<<<<<<< Details Sotred SuccessFully <<<<<<<\n\n"); 
+        printf("\n////////////////////////////////////////////////////////"); 
+    }
+
