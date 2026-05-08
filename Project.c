@@ -8,6 +8,8 @@ typedef struct Patient
     char Name[200], Diseas[200], Doctor_choice[200];
 } P;
 
+P s; // Variable Used at the time of Printng Served Patient
+
 void menu();
 void loadDoctor();
 void Patinet_Information();
@@ -16,6 +18,7 @@ void delete_doctor(char doctor[100]); // Removing Doctor After Getting Hireed
 int check_doctor(char Doctor[100]);   // Checking Doctor If Available For Hireing
 
 void serve_Patient();
+void displayServingPatient();
 
 int main()
 {
@@ -42,6 +45,11 @@ int main()
         case 3:
             system("clear");
             serve_Patient();
+            break;
+
+        case 4:
+
+            displayServingPatient();
             break;
 
         case 7:
@@ -277,6 +285,7 @@ void serve_Patient()
         i++;
     }
     fclose(fp1);
+    s = temp[0];
 
     // ========= Deleting The Patient From The File =========
 
@@ -299,15 +308,16 @@ void serve_Patient()
 
     remove("Appointment.txt");
     rename("Appointment_copy.txt", "Appointment.txt");
+    printf("\n\n<<<<<< Serving Patient >>>>>>\n");
+}
 
-    printf("<<<<<< Serving Patient >>>>>>\n");
-
-    printf("Token Number: %d", temp[0].Token_number);
-    printf("\nName Of Patient: %s", temp[0].Name);
-    printf("\nAge Of Patient: %d", temp[0].age);
-    printf("\nDisease Of Patient: %s", temp[0].Diseas);
-    printf("\nChoice Of Doctor: %s", temp[0].Doctor_choice);
-
-    printf("\n\n////////////////////////////////////////////////////////\n\n");
-    
+void displayServingPatient()
+{
+    printf("\n\n<<<<<< Serving Patient >>>>>>\n");
+    printf("Token Number: %d", s.Token_number);
+    printf("\nName Of Patient: %s", s.Name);
+    printf("\nAge Of Patient: %d", s.age);
+    printf("\nDisease Of Patient: %s", s.Diseas);
+    printf("\nChoice Of Doctor: %s", s.Doctor_choice);
+     printf("\n\n////////////////////////////////////////////////////////\n\n");
 }
