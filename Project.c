@@ -16,6 +16,7 @@ void Patinet_Information();
 
 void delete_doctor(char doctor[100]); // Removing Doctor After Getting Hireed
 int check_doctor(char Doctor[100]);   // Checking Doctor If Available For Hireing
+void add_doctor(char doctor[100]);    // Adding Doctor To File After Treatment
 
 void serve_Patient();
 void displayServingPatient();
@@ -48,7 +49,7 @@ int main()
             break;
 
         case 4:
-
+            system("clear");
             displayServingPatient();
             break;
 
@@ -150,7 +151,7 @@ void Patinet_Information()
             printf("\n<<<<<  DOCTORS AVAILABLE >>>>>\n");
 
         flag = 1;
-        printf("%s\n", name);
+        printf("%s", name);
         printf("\n----------------------\n");
     }
     printf("\n\n");
@@ -180,7 +181,7 @@ void Patinet_Information()
 
     // ========= Storing The Data Of Patient In File Using Token System =========
 
-    fp1 = fopen("Appointment.txt", "r");
+    fp1 = fopen("Appointment.txt", "a+");
     if (fp1 == NULL)
     {
         printf("\n*** Error In Opening File ***\n\n");
@@ -192,15 +193,7 @@ void Patinet_Information()
         if (temp.Token_number > p.Token_number)
             p.Token_number = temp.Token_number;
     }
-    fclose(fp1);
     p.Token_number++; // Increasing Token Number By One
-
-    fp1 = fopen("Appointment.txt", "a");
-    if (fp1 == NULL)
-    {
-        printf("\n*** Error In Opening File ***\n\n");
-        return;
-    }
 
     fprintf(fp1, "Token No: %d \nPatient Name: %sPatient Age: %d \nPatient Disease: %sDoctor Name: Dr.%s\n\n", p.Token_number, p.Name, p.age, p.Diseas, p.Doctor_choice);
     fclose(fp1);
@@ -276,18 +269,31 @@ void delete_doctor(char doctor[100])
 void serve_Patient()
 {
     P p, temp[100];
-    int i = 0;
+    int i = 0, f = 0;
     FILE *fp1, *fp2;
 
     fp1 = fopen("Appointment.txt", "r");
     while ((fscanf(fp1, "Token No: %d \nPatient Name: %[^\n]\nPatient Age: %d \nPatient Disease: %[^\n]\nDoctor Name: Dr.%[^\n]\n\n", &temp[i].Token_number, temp[i].Name, &temp[i].age, temp[i].Diseas, temp[i].Doctor_choice) != EOF))
     {
+        f = 1;
         i++;
     }
     fclose(fp1);
-    s = temp[0];
+
+    // ========= Deleting The File Appointment If No Patient Is Remainging To Serve =========
+
+    if (f == 0)
+    {
+        system("clear");
+        printf("<<<<< No Patient Remaining To Serve <<<<<");
+        remove("Appointment.txt");
+        printf("\n\n////////////////////////////////////////////////////////\n\n");
+        return;
+    }
 
     // ========= Deleting The Patient From The File =========
+
+    s = temp[0];
 
     fp2 = fopen("Appointment_copy.txt", "a");
     if (fp2 == NULL)
@@ -297,27 +303,48 @@ void serve_Patient()
     }
 
     fp1 = fopen("Appointment.txt", "r");
-   
-        for (int k = 0; k < i-1; k++)
-        {
-            fprintf(fp2, "Token No: %d \nPatient Name: %s\nPatient Age: %d \nPatient Disease: %s\nDoctor Name: Dr.%s\n\n", temp[k+1].Token_number, temp[k+1].Name, temp[k+1].age, temp[k+1].Diseas, temp[k+1].Doctor_choice);
-        }
-        
+
+    for (int k = 0; k < i - 1; k++)
+    {
+        fprintf(fp2, "Token No: %d \nPatient Name: %s\nPatient Age: %d \nPatient Disease: %s\nDoctor Name: Dr.%s\n\n", temp[k + 1].Token_number, temp[k + 1].Name, temp[k + 1].age, temp[k + 1].Diseas, temp[k + 1].Doctor_choice);
+    }
+
     fclose(fp1);
     fclose(fp2);
 
     remove("Appointment.txt");
     rename("Appointment_copy.txt", "Appointment.txt");
     printf("\n\n<<<<<< Serving Patient >>>>>>\n");
+
+    add_doctor(temp[0].Doctor_choice); // Adding Doctor Again to File
 }
+
+// ========= Function To Display The Current Serving Patient =========
 
 void displayServingPatient()
 {
-    printf("\n\n<<<<<< Serving Patient >>>>>>\n");
+    printf("\n\n<<<<<< Serving Patient >>>>>>\n\n");
     printf("Token Number: %d", s.Token_number);
     printf("\nName Of Patient: %s", s.Name);
     printf("\nAge Of Patient: %d", s.age);
     printf("\nDisease Of Patient: %s", s.Diseas);
     printf("\nChoice Of Doctor: %s", s.Doctor_choice);
-     printf("\n\n////////////////////////////////////////////////////////\n\n");
+    printf("\n\n////////////////////////////////////////////////////////\n\n");
+}
+
+// ========= Adding Doctor To Available Doctor File Again After Treatment Is Done ========
+
+void add_doctor(char doctor[100])
+{
+    FILE *fp1 = fopen("Doctors.txt","a");
+    
+    if(fp1 == NULL)
+    {
+        system("clear");
+        printf("**** Error In Opening Filf ****\n");
+        return;
+    }
+
+    fprintf(fp1, "Name: %s\n", doctor);
+    fclose(fp1);
 }
